@@ -5,9 +5,9 @@
 #include "linkedlist.h"
 
 typedef struct {
-	int is_static;
-	Vector *location;
-	Vector *velocity;
+    int is_static;
+    Vector *location;
+    Vector *velocity;
 } Object;
 
 Object *Object_New(double x, double y, int);
