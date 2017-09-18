@@ -17,6 +17,10 @@ Vector *Vector_FromSize(double angle, double size) {
     return Vector_New(cos(angle)*size, sin(angle)*size);
 }
 
+void Vector_Free(Vector *v) {
+    free(v);
+}
+
 double Vector_Size(Vector *v){
     double x = v->x;
     double y = v->y;

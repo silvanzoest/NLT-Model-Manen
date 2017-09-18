@@ -10,6 +10,7 @@ typedef struct {
     Vector *velocity;
 } Object;
 
-Object *Object_New(double x, double y, int);
+Object *Object_New(double, double, double, double, int);
+void Object_Free(Object *);
 
 #endif /* OBJECT_H */

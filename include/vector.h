@@ -8,6 +8,7 @@ typedef struct {
 
 Vector *Vector_New(double, double);
 Vector *Vector_FromSize(double, double);
+void Vector_Free(Vector *);
 double Vector_Size(Vector *);
 double Vector_Dot(Vector *, Vector *);
 double Vector_Angle(Vector *, Vector *);

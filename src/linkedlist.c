@@ -1,4 +1,9 @@
+#include <stdlib.h>
+
 #include "linkedlist.h"
+
+/******************************************************************************
+Node methods */
 
 Node *Node_New(void *ob) {
     Node *node = malloc(sizeof(Node));
@@ -14,6 +19,9 @@ void Node_Free(Node *node) {
     node->ob = NULL;
     free(node);
 }
+
+/******************************************************************************
+Linked list methods */
 
 LinkedList *LinkedList_New() {
     LinkedList *list = malloc(sizeof(LinkedList));
@@ -37,7 +45,7 @@ void LinkedList_Free(LinkedList *list) {
 int LinkedList_Append(LinkedList *list, void *object){
     Node *node = Node_New(object);
     if (node == NULL){
-        return 1;
+        return LL_ERROR;
     }
     if (list->size == 0) {
         list->head = node;
@@ -48,13 +56,13 @@ int LinkedList_Append(LinkedList *list, void *object){
         list->tail = node;
         }
     list->size++;
-    return 0;
+    return LL_NO_ERROR;
 }
 
 int LinkedList_Prepend(LinkedList *list, void *object){
     Node *node = Node_New(object);
     if (node == NULL){
-        return 1;
+        return LL_ERROR;
     }
     if (list->size == 0) {
         list->head = node;
@@ -65,5 +73,136 @@ int LinkedList_Prepend(LinkedList *list, void *object){
         list->head = node;
     }
     list->size++;
-    return 0;
+    return LL_NO_ERROR;
+}
+
+int LinkedList_PopHead(LinkedList *list, void *res) {
+    if (list->tail == NULL) {
+        return LL_ERROR;
+    }
+    if (list->size == 1) {
+        *res = list->head->ob;
+        Node_Free(list->head);
+        list->head = list->tail = NULL;
+        list->size--;
+        return LL_NO_ERROR;
+    }
+    *res = list->head->ob;
+    list->head = list->head->next;
+    Node_Free(list->head->prev);
+    list->head->prev = NULL;
+    list->size--;
+    return LL_NO_ERROR
+}
+
+int LinkedList_PopTail(LinkedList *list, void *res) {
+    if (list->head == NULL) {
+        return LL_ERROR;
+    }
+    if (list->size == 1) {
+        *res = list->tail->ob;
+        Node_Free(list->tail);
+        list->head = list->tail = NULL;
+        list->size--;
+        return LL_NO_ERROR;
+    }
+    *res = list->tail->ob;
+    list->tail = list->tail->prev;
+    Node_Free(list->tail->next);
+    list->tail->next = NULL;
+    list->size--;
+    return LL_NO_ERROR
+}
+
+Node *_LinkedList_GetNode(LinkedList *list, size_t index) {
+    if (index < 0 || index >= list->size) {
+        return NULL;
+    }
+    if (index <= list->size / 2) {
+        Node *current = list->head;
+        for (size_t i = 0; i < index; i++) {
+            current = current->next;
+        }
+        return current;
+    } else {
+        Node *current = list->tail;
+        for (size_t i = list->size - 1; i > index; i++) {
+            current = current->prev;
+        }
+        return current;
+    }
+}
+
+void *LinkedList_GetIndex(LinkedList *list, size_t index) {
+    Node *node = _LinkedList_GetNode(list, index);
+    if (node == NULL) {
+        return NULL;
+    }
+    return node->ob;
+}
+
+int LinkedList_SetIndex(LinkedList *list, size_t index, void *ob) {
+    Node *node = _LinkedList_GetNode(list, index);
+    if (node == NULL) {
+        return LL_ERROR;
+    }
+    node->ob = ob;
+    return LL_NO_ERROR;
+}
+
+int LinkedList_DelIndex(LinkedList *list, size_t index) {
+    if (list->size == 1) {
+        if (index != 0) {
+            return LL_ERROR;
+        }
+        Node_Free(list->head);
+        list->head = list->tail = 0;
+        list->size--;
+    } else if (index == 0) {
+        list->head = list->head->next;
+        Node_Free(list->head->prev);
+        list->head->prev = NULL;
+        list->size--;
+    } else if (index == list->size - 1) {
+        list->tail = list->tail->prev;
+        Node_Free(list->tail->next);
+        list->tail->next = NULL;
+        list->size--;
+    } else {
+        Node *node = _LinkedList_GetNode(list, index);
+        if (node == NULL) {
+            return LL_ERROR;
+        }
+        node->prev->next = node->next;
+        node->next->prev = node->prev;
+        Node_Free(node);
+        list->size--;
+    }
+    return LL_NO_ERROR;
+}
+
+/******************************************************************************
+Iterator methods */
+
+LinkedList_Iterator *LinkedList_GetIter(LinkedList *list) {
+    LinkedList_Iterator *it = malloc(sizeof(LinkedList_Iterator));
+    if (it == NULL) {
+        return NULL;
+    }
+    it->list = list;
+    it->it_size = list->size;
+    it->current = list->head;
+    return it;
+}
+
+int LinkedList_IterNext(LinkedList_Iterator *it, void *res) {
+    if (it->list->size != it->it_size) {
+        return LL_ERROR;
+    }
+    if (it->current == NULL) {
+        return LL_IT_EXHAUSTED;
+    }
+    *res = it->current->ob;
+    it->current = it->current->next;
+    return LL_NO_ERROR;
 }
