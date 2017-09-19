@@ -9,11 +9,8 @@ static int intitialized = 0;
 static LinkedList *objects;
 
 Object *Object_New(float x, float y, float dx, float dy, int is_static) {
-    if (!initialized) {
-        if (Object_Init() == ERROR) {
-            return NULL;
-        }
-        initialized = 1;
+    if ((!initialized) && Object_Init() == ERROR) {
+        return NULL;
     }
     Object *ob = malloc(sizeof(Object));
     if (ob == NULL) {
@@ -62,10 +59,14 @@ LinkedList *GetObjects(void) {
 }
 
 int Object_Init(void) {
+    if (initialized) {
+        return ERROR;
+    }
     LinkedList *list = LinkedList_New();
     if (list == NULL) {
         return ERROR;
     }
     objects = list;
+    initialized = 1;
     return SUCCESS;
 }
