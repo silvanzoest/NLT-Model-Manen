@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#include "constants.h"
 #include "linkedlist.h"
 
 /******************************************************************************
@@ -45,7 +46,7 @@ void LinkedList_Free(LinkedList *list) {
 int LinkedList_Append(LinkedList *list, void *object){
     Node *node = Node_New(object);
     if (node == NULL){
-        return LL_ERROR;
+        return ERROR;
     }
     if (list->size == 0) {
         list->head = node;
@@ -56,13 +57,13 @@ int LinkedList_Append(LinkedList *list, void *object){
         list->tail = node;
         }
     list->size++;
-    return LL_NO_ERROR;
+    return SUCCESS;
 }
 
 int LinkedList_Prepend(LinkedList *list, void *object){
     Node *node = Node_New(object);
     if (node == NULL){
-        return LL_ERROR;
+        return ERROR;
     }
     if (list->size == 0) {
         list->head = node;
@@ -73,45 +74,45 @@ int LinkedList_Prepend(LinkedList *list, void *object){
         list->head = node;
     }
     list->size++;
-    return LL_NO_ERROR;
+    return SUCCESS;
 }
 
 int LinkedList_PopHead(LinkedList *list, void *res) {
     if (list->tail == NULL) {
-        return LL_ERROR;
+        return ERROR;
     }
     if (list->size == 1) {
         *res = list->head->ob;
         Node_Free(list->head);
         list->head = list->tail = NULL;
         list->size--;
-        return LL_NO_ERROR;
+        return SUCCESS;
     }
     *res = list->head->ob;
     list->head = list->head->next;
     Node_Free(list->head->prev);
     list->head->prev = NULL;
     list->size--;
-    return LL_NO_ERROR
+    return SUCCESS
 }
 
 int LinkedList_PopTail(LinkedList *list, void *res) {
     if (list->head == NULL) {
-        return LL_ERROR;
+        return ERROR;
     }
     if (list->size == 1) {
         *res = list->tail->ob;
         Node_Free(list->tail);
         list->head = list->tail = NULL;
         list->size--;
-        return LL_NO_ERROR;
+        return SUCCESS;
     }
     *res = list->tail->ob;
     list->tail = list->tail->prev;
     Node_Free(list->tail->next);
     list->tail->next = NULL;
     list->size--;
-    return LL_NO_ERROR
+    return SUCCESS
 }
 
 Node *_LinkedList_GetNode(LinkedList *list, size_t index) {
@@ -144,16 +145,16 @@ void *LinkedList_GetIndex(LinkedList *list, size_t index) {
 int LinkedList_SetIndex(LinkedList *list, size_t index, void *ob) {
     Node *node = _LinkedList_GetNode(list, index);
     if (node == NULL) {
-        return LL_ERROR;
+        return ERROR;
     }
     node->ob = ob;
-    return LL_NO_ERROR;
+    return SUCCESS;
 }
 
 int LinkedList_DelIndex(LinkedList *list, size_t index) {
     if (list->size == 1) {
         if (index != 0) {
-            return LL_ERROR;
+            return ERROR;
         }
         Node_Free(list->head);
         list->head = list->tail = 0;
@@ -171,14 +172,14 @@ int LinkedList_DelIndex(LinkedList *list, size_t index) {
     } else {
         Node *node = _LinkedList_GetNode(list, index);
         if (node == NULL) {
-            return LL_ERROR;
+            return ERROR;
         }
         node->prev->next = node->next;
         node->next->prev = node->prev;
         Node_Free(node);
         list->size--;
     }
-    return LL_NO_ERROR;
+    return SUCCESS;
 }
 
 /******************************************************************************
@@ -197,12 +198,12 @@ LinkedList_Iterator *LinkedList_GetIter(LinkedList *list) {
 
 int LinkedList_IterNext(LinkedList_Iterator *it, void *res) {
     if (it->list->size != it->it_size) {
-        return LL_ERROR;
+        return ERROR;
     }
     if (it->current == NULL) {
-        return LL_IT_EXHAUSTED;
+        return ITER_EXHAUSTED;
     }
     *res = it->current->ob;
     it->current = it->current->next;
-    return LL_NO_ERROR;
+    return SUCCESS;
 }

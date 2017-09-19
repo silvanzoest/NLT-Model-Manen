@@ -1,11 +1,12 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include "constants.h"
 #include "vector.h"
 
 Vector *Vector_New(double x, double y) {
     Vector *vec = malloc(sizeof(Vector));
-    if (vec == NULL) { 
+    if (vec == NULL) {
         return NULL;
     }
     vec->x = x;

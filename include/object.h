@@ -13,4 +13,8 @@ typedef struct {
 Object *Object_New(double, double, double, double, int);
 void Object_Free(Object *);
 
+LinkedList *GetObjects(void);
+
+int Object_Init(void);
+
 #endif /* OBJECT_H */

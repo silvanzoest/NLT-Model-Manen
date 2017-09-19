@@ -3,10 +3,6 @@
 
 #include <stdlib.h>
 
-#define LL_NO_ERROR 0
-#define LL_ERROR 1
-#define LL_IT_EXHAUSTED 2
-
 typedef struct Node {
     struct Node *next;
     struct Node *prev;
