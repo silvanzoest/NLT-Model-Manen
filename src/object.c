@@ -5,9 +5,16 @@
 #include "vector.h"
 #include "object.h"
 
+static int intitialized = 0;
 static LinkedList *objects;
 
 Object *Object_New(float x, float y, float dx, float dy, int is_static) {
+    if (!initialized) {
+        if (Object_Init() == ERROR) {
+            return NULL;
+        }
+        initialized = 1;
+    }
     Object *ob = malloc(sizeof(Object));
     if (ob == NULL) {
         return NULL;
