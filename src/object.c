@@ -8,7 +8,7 @@
 static int intitialized = 0;
 static LinkedList *objects;
 
-Object *Object_New(float x, float y, float dx, float dy, float mass, int is_static) {
+Object *Object_New(double x, double y, double dx, double dy, double mass, int is_static) {
     if ((!initialized) && Object_Init() == ERROR) {
         return NULL;
     }
