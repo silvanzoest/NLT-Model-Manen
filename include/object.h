@@ -11,7 +11,7 @@ typedef struct {
     Vector *velocity;
 } Object;
 
-Object *Object_New(double, double, double, double, int);
+Object *Object_New(double, double, double, double, double, int);
 void Object_Free(Object *);
 
 LinkedList *GetObjects(void);
