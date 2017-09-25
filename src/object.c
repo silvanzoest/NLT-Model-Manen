@@ -8,7 +8,7 @@
 static int intitialized = 0;
 static LinkedList *objects;
 
-Object *Object_New(float x, float y, float dx, float dy, int is_static) {
+Object *Object_New(float x, float y, float dx, float dy, float mass, int is_static) {
     if ((!initialized) && Object_Init() == ERROR) {
         return NULL;
     }
@@ -27,6 +27,7 @@ Object *Object_New(float x, float y, float dx, float dy, int is_static) {
         free(ob);
         return NULL;
     }
+    ob->mass = mass;
     ob->is_static = is_static;
     if (LinkedList_Append(objects, ob) == ERROR) {
         Vector_Free(ob->location);
