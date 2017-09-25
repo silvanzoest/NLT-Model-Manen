@@ -6,6 +6,7 @@
 
 typedef struct {
     int is_static;
+    float mass;
     Vector *location;
     Vector *velocity;
 } Object;
