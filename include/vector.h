@@ -15,6 +15,6 @@ double Vector_Angle(Vector *, Vector *);
 Vector *Vector_Add(Vector *, Vector *);
 Vector *Vector_Sub(Vector *, Vector *);
 Vector *Vector_Mul(Vector *, long long);
-// Vector *Vector_CopySign(Vector *, Vector *);
+Vector *Vector_CopySign(Vector *, Vector *);
 
 #endif /* VECTOR_H */
