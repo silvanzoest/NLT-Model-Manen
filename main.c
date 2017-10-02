@@ -3,16 +3,34 @@
 #include "nlt.h"
 
 const double G = 6.67408e-11;
+Object *mars;
+Object *phobos;
+Object *deimos;
+const Vector *UNIT_X;
 
-int main(void) {
-    Object_Init();
-    Object *mars = Object_New(0, 0, 0, 0, 6.41693e23, , 1);
-    Object *phobos = Object_New(0, 9377.2e3, 2137.08977, 0, 10.6e15, 0);
-    Object *deimos = Object_New(0, -23460e3, -1351.124444, 0, 1.4762e15, 0);
+int init_model(void) {
+    mars = Object_New(0, 0, 0, 0, 6.41693e23, , 1);
+    if (mars == NULL) {
+        return ERROR;
+    }
+    phobos = Object_New(0, 9377.2e3, 2137.08977, 0, 10.6e15, 0);
+    if (phobos == NULL) {
+        return ERROR;
+    }
+    deimos = Object_New(0, -23460e3, -1351.124444, 0, 1.4762e15, 0);
+    if (deimos == NULL) {
+        return ERROR;
+    }
     
-    const Vector *UNIT_X = Vector_New(1, 0);
+    UNIT_X = Vector_New(1, 0);
+    if (UNIT_X == NULL) {
+        return ERROR;
+    }
     
-    while (1) {
+    return SUCCESS;
+}
+
+int iteration(void) {
         double dist_pd = Vector_Size(Vector_Sub(phobos, deimos));
         
         double Fg_md = (G* mars->mass* deimos->mass)/  pow(Vector_Size(deimos->location), 2);
@@ -50,5 +68,5 @@ int main(void) {
         deimos->location = Vector_Add(deimos->location, Vector_Mul(deimos->velocity, dt));
         Vector_Free(tlp);
         Vector_Free(tld);
-    }
+    return SUCCESS;
 }
