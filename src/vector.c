@@ -53,3 +53,8 @@ Vector *Vector_Mul(Vector *v, long long n){
     y = v->y;
     return Vector_New(x*n, y*n);
 }
+
+#define SIGN(x) ((int)((x) >= 0 ? 0 : 1))
+Vector *Vector_CopySign(Vector *a, Vector *b) {
+    return Vector_New((-1)*SIGN(a->x)*(b->x), (-1)*SIGN(a->y)*(b->y));
+}
