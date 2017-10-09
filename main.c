@@ -2,6 +2,15 @@
 
 #include "nlt.h"
 
+unsigned long long id = 0;
+
+#define OP_WITH_FREE(or, expr) \
+Vector *temp##id = or; \
+expr; \
+Vector_Free(temp##id); \
+id++; \
+do {} while (0)
+
 const double G = 6.67408e-11;
 Object *mars;
 Object *phobos;
@@ -54,19 +63,10 @@ int iteration(void) {
         Vector_Free(Fres_phobos);
         Vector_Free(Fres_deimos);
         
-        
-        Vector *tvp = phobos->velocity;
-        Vector *tvd = deimos->velocity;
-        phobos->velocity = Vector_Add(phobos->velocity, Vector_Mul(a_p, dt));
-        deimos->velocity = Vector_Add(deimos->velocity, Vector_Mul(a_d, dt));
-        Vector_Free(tvp);
-        Vector_Free(tvd);
-        
-        Vector *tlp = phobos->location;
-        Vector *tld = deimos->location;
-        phobos->location = Vector_Add(phobos->location, Vector_Mul(phobos->velocity, dt));
-        deimos->location = Vector_Add(deimos->location, Vector_Mul(deimos->velocity, dt));
-        Vector_Free(tlp);
-        Vector_Free(tld);
+        OP_WITH_FREE(phobos->velocity, Vector_Add(phobos->velocity, Vector_Mul(a_p, dt)));
+        OP_WITH_FREE(deimos->velocity, Vector_Add(deimos->velocity, Vector_Mul(a_d, dt)));
+ 
+        OP_WITH_FREE(phobos->location, Vector_Add(phobos->location, Vector_Mul(phobos->velocity, dt)));
+        OP_WITH_FREE(deimos->location, Vector_Add(deimos->location, Vector_Mul(deimos->velocity, dt)));
     return SUCCESS;
 }
