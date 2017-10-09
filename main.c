@@ -6,7 +6,7 @@ unsigned long long id = 0;
 
 #define OP_WITH_FREE(or, expr) \
 Vector *temp##id = or; \
-expr; \
+or = expr; \
 Vector_Free(temp##id); \
 id++; \
 do {} while (0)
