@@ -5,10 +5,16 @@
 unsigned long long id = 0;
 
 #define OP_WITH_FREE(or, expr) \
-Vector *temp##id = or; \
+Vector * temp##id = or; \
 or = expr; \
-Vector_Free(temp##id); \
+Vector_Free( temp##id); \
 id++; \
+do {} while (0)
+
+#define OP_WITH_FREE_ARGS(tar, fun, arg1, arg2) \
+Vector * tar = fun (arg1, arg2); \
+Vector_Free( arg1 ); \
+Vector_Free( arg2 ); \
 do {} while (0)
 
 const double G = 6.67408e-11;
@@ -50,14 +56,10 @@ int iteration(void) {
         Vector *Fgv_mp = Vector_FromSize(Vector_Angle(phobos, UNIT_X), Fg_mp);
         Vector *Fgv_pd = Vector_FromSize(Vector_Angle(Vector_Sub(phobos, deimos), UNIT_X), Fg_pd);
         Vector *Fgv_dp = Vector_FromSize(Vector_Angle(Vector_Sub(deimos, phobos), UNIT_X), Fg_pd);
-        
-        Vector *Fres_phobos = Vector_Add(Fgv_mp, Fgv_dp);
-        Vector *Fres_deimos = Vector_Add(Fgv_md, Fgv_pd);
-        Vector_Free(Fgv_md);
-        Vector_Free(Fgv_mp);
-        Vector_Free(Fgv_pd);
-        Vector_Free(Fgv_dp);
-        
+               
+        OP_WITH_FREE_ARGS(Fres_phobos, Vector_Add, Fgv_mp, Fgv_dp);
+        OP_WITH_FREE_ARGS(Fres_deimos, Vector_Add, Fgv_md, Fgv_pd);
+    
         Vector *a_p = Vector_Mul(Fres_phobos, 1/phobos->mass);
         Vector *a_d = Vector_Mul(Fres_deimos, 1/deimos->mass);
         Vector_Free(Fres_phobos);
